@@ -1,0 +1,24 @@
+Section -> Kafka Basics:
+
+====== Understanding of Topic =====
+* Topics: a particular stream of data.
+    - similar to table in database(witout constraints). 
+    - you can create as many as you want topics, there is no limit.
+    - topics Identified by its name.
+
+* Topics are split into partitions
+    - each partition is ordered.
+    - each message within a partition gets incremental id, called offset.
+    e.g. topic1
+    partition1: 0 1 2 3 4 5 
+    partition2: 0 1 2 3
+
+    - real time example like fleet of truks(any courier companies). assume a topic like truck-tracker.
+      each partition is like tracking for each truck on intervel of 20 secs. so that they can collect empl.
+      information such as how many kilometers they traveled so far, fuel they used, if they need rest we can
+      send notification and so on
+
+    - order is garunted within the partition (not accros the partitions).
+    - data is kept only for limited time.(not more than one week).
+    - once data is assigned to partition it is cant change. immutable.
+    - each message is assigned randomly unless mentioned key
