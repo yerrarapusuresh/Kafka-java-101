@@ -22,3 +22,83 @@ Section -> Kafka Basics:
     - data is kept only for limited time.(not more than one week).
     - once data is assigned to partition it is cant change. immutable.
     - each message is assigned randomly unless mentioned key
+
+* Brokers
+    - kafka cluster is composed of multiple brokers(servers).
+    - Each broker is Identified with its ID(integer).
+    - Each broker contains certain topic partitions.(partitions of topics distributed among the servers)
+    - After connecting any broker(called bootstrap broker). you can connect to entire cluster.
+    - A good number is started from 3 numbers, in some cases 100 of servers. 
+
+* Topic Replication factor
+    - Topic should have replication factor > 1(usully between 2 and 3).
+    - if any broker is down and another broker can serve the data. 
+
+* Producers
+    - Producers write data to topics(which is made of partitions).
+    - Producers automatically know to write which broker and which partition to write.
+    - in case of broker failure, producer automatically recover the data.
+    - Producers can choose to receive acknowledgment for data writes.
+        > ACK=0: Producer wont wait for acknowledgment.(possible data loss).
+        > ACK=1: Producer will wait acknowledgment for leader(limited data loss).
+        > ACK=ALL: Producer will wait leader as well replica(no data loss).
+* Producers: Message key
+    - Producers can choose to send a key with the message.
+    - if key=null, data is sent round robin(broker 101, broker 102 and so on).
+    - if key sent all messages will go that particular partition(order gurantee).
+
+* Consumers
+    - Consumers read data from a topic(Identified by name).
+    - Consumers know which broker to read from
+    - In case of broker failures, consumer how to recover from failure.
+    - Data is read in order with in each partition. 
+
+* Consumer Groups.
+    - Consumers read data from consumer groups.
+    - Each consumer in a group read data in exclusive pattren.
+    - if you have more consumer then partitions the some consumer will inactive.
+
+* Consumer Offsets
+    - Kafka stores the offsets at which a consumer group has been reading
+    - the offsets committed in a Kafka topic named __consumer_offsets.
+    - when a consumer in a group has processed data received from kafka, it should be committing the offsets.
+    - if a consumer dies, it will be able to read back from where it left off 
+
+* Delivery semantics for Consumers
+    - Consumers choose when to commit offsets.
+    - there are 3 delivery semantics:
+        > At Most once:
+            - offsets are committed as soon as the message is received.
+            - if the processing goes wrong, the message will be lost(it wont be read again).
+
+        > At least once(usully preferred):
+            - offsets are committed after the message is processed.
+            - if the processing goes wrong, the message will be read again.
+            - this can result in duplicate processing of messages. make sure your processing is idempotent.
+        > Exactly once:
+        - can be achieved for kafka=>kafka using kafka streams API.
+        - for Kafka => External System workflows, use an idempotent consumer.
+
+* Kafka Broker Discovery
+    - every kafka broker is also called a bootstrap server.
+    - that means you only need to connect to one broker and you will get full cluster information.
+    - each broker knows about all the brokers, parititions and offsets.
+
+* Zookeeper
+    - Zookeeper manages brokers(keeps a list of them).
+    - Zookeeper helps in performing leader elections for partitions.
+    - Zookeeper sends notification to Kafka in case of changes(new topic, broker dies, brokers comes up, delete topics).
+    - Kafk cant work without Zookeeper.
+    - Zookeeper by design odd number 3, 5, 7.
+    - Kafka handles consumer offsets not Zookeeper
+
+
+
+===  starting of Zookeeper in windows machine ===
+zookeeper-server-start.bat config/zookeeper.properties
+kafka-server-start.bat config/server.properties
+
+in order to up the server in windows, first we need create data folder at level of bin and config
+in data -> create two folder zookeeper and kafka
+the update the path of respective properties files. 
+
