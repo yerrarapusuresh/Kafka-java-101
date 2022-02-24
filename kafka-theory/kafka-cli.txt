@@ -1,0 +1,30 @@
+=== KAFKA-CLI ===
+
+* Show list of topics
+    - kafka-topics --list --bootstrap-server localhost:9092
+* Create new topics
+    - kafka-topics --create --topic test-topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3
+* Describe  topic
+    - kafka-topics --bootstrap-server localhost:9092 --topic test-topic --describe
+* Delete topic in kafka
+    - kafka-topics -bootstrap-server localhost:9092 --topic test-topic --delete
+
+
+=== KAFKA-CLI-PRODUCER
+* The following command for write data to topic in kakfa using command line
+    - kafka-console-producer --broker-list localhost:9092 --topic test-topic 
+    - kafka-console-producer --broker-list localhost:9092 --topic test-topic --producer-property acks=all
+
+NOTE: in kafka we dont need to create to topic, we can directly write to topic. then will get warning for leader selection.
+      it will automatically select the leader and create the topic. we just need to write
+
+=== KAFKA-CLI-CONSUMER
+* the following command is read content from kafka consumer.
+    -kakfa-console-consumer --bootstrap-server localhost:9092 --topic test-topic
+
+    the above command is will be useful in realtime stream, it wont read messages which was sent before execute the above message.
+    the following command will be useful to read content read from starting.
+
+    -kafka-console-consumer -bootstrap-server localhost:9092 --topic test-topic --from-beginning
+
+== KAFKA-CLI-CONSUMER-GROUPS
